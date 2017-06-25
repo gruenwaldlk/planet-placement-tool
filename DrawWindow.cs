@@ -16,5 +16,31 @@ namespace PlanetPlacementTool
         {
             InitializeComponent();
         }
+
+        private void menu_item_file_new__Click(object sender, EventArgs e)
+        {
+            NewProjectWindow new_project_dialogue_ = new NewProjectWindow();
+            new_project_dialogue_.ShowDialog();
+        }
+
+        private void menu_item_file_open__Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void menu_item_file_close__Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void menu_item_file_save__Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void menu_item_export_planets__Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
