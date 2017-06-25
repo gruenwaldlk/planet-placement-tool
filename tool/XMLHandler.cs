@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PlanetPlacementTool.tool
 {
-    class XMLHandler
+    public class XMLHandler
     {
     }
 }

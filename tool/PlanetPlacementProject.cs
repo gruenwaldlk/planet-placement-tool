@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PlanetPlacementTool.tool
 {
-    class PlanetPlacementProject
+    public class PlanetPlacementProject
     {
         public string ProjectName { get; set; }
         public IList<string> PlanetsXMLPaths { get; set; }

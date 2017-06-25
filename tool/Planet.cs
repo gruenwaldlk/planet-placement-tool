@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PlanetPlacementTool.tool
 {
-    class Planet
+    public class Planet
     {
         public string Name { get; set; }
         public Vector3 Galactic_Position { get; set; }

@@ -13,8 +13,8 @@ namespace PlanetPlacementTool
 {
     public partial class NewProjectWindow : Form
     {
-        private tool.PlanetPlacementProject pptp { get; set; }
-        private string export_path_ {get;set;}
+        public tool.PlanetPlacementProject planet_placement_tool_ { get; set; }
+        public string export_path_ {get;set;}
 
         private string s_save_folder, s_project_name, s_selected_background_image_;
         private string[] arr_planet_files_, arr_trade_route_files_;
@@ -45,8 +45,7 @@ namespace PlanetPlacementTool
 
         private void btn_create__Click(object sender, EventArgs e)
         {
-            //PlanetPlacementProject(string newProjectName, string[] newPlanetPaths, string newBackgroundImagePath)
-            pptp = new tool.PlanetPlacementProject(s_project_name, arr_planet_files_, s_selected_background_image_);
+            planet_placement_tool_ = new tool.PlanetPlacementProject(s_project_name, arr_planet_files_, s_selected_background_image_);
             export_path_ = s_save_folder;
             DialogResult = DialogResult.OK;
             Close();
@@ -83,7 +82,7 @@ namespace PlanetPlacementTool
             if (result == DialogResult.OK)
             {
                 s_save_folder = project_save_folder_.SelectedPath;
-                project_path_display_.Text = s_save_folder + "\\" + s_project_name + ".yvaw-ppt";
+                project_path_display_.Text = s_save_folder + "\\" + s_project_name + ".yvaw-pptp";
                 project_path_display_.Enabled = false;
                 b_path_set_ = true;
             }
