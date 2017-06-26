@@ -48,6 +48,8 @@ namespace PlanetPlacementTool.tool
             //Representation.BackColor = System.Drawing.Color.PaleGreen;
             Representation.Paint += new System.Windows.Forms.PaintEventHandler(Representation_Paint);
             Representation.MouseEnter += new System.EventHandler(Representation_MouseEnter);
+            System.Windows.Forms.ToolTip ttip = new System.Windows.Forms.ToolTip();
+            ttip.SetToolTip(Representation, Name);
             return Representation;
         }
         private void Representation_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
