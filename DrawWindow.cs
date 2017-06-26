@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,7 +20,7 @@ namespace PlanetPlacementTool
         public string project_save_folder_ { get; set; }
         private tool.SaveHandler save_handler_ = new tool.SaveHandler();
         private Bitmap buffer_grid_;
-
+        private List<tool.Planet> drawn_planets_ = new List<tool.Planet>();
         public DrawWindow()
         {
             InitializeComponent();
@@ -65,6 +67,7 @@ namespace PlanetPlacementTool
                 DialogResult result = chooseProject.ShowDialog();
                 if (result == DialogResult.OK)
                 {
+                    canvas_draw_space_.Controls.Clear();
                     string fileContent = File.ReadAllText(chooseProject.FileName);
                     planet_placement_project_ = JsonConvert.DeserializeObject<tool.PlanetPlacementProject>(fileContent);
 #if DEBUG
@@ -73,6 +76,8 @@ namespace PlanetPlacementTool
 #endif
                     set_canvas_background();
                     Populate_Planet_Display();
+                    DrawAllPlanets();
+
                     main_status_strip_label01_.Text = "Loaded project: " + chooseProject.FileName;
                 }
             }
@@ -86,7 +91,7 @@ namespace PlanetPlacementTool
 
         private void menu_item_file_save__Click(object sender, EventArgs e)
         {
-                Save();
+            Save();
         }
 
         private void menu_item_export_planets__Click(object sender, EventArgs e)
@@ -201,6 +206,7 @@ namespace PlanetPlacementTool
                 {
                     this.Enabled = true;
                     Populate_Planet_Display();
+                    DrawAllPlanets();
                     bpb.Close();
                     bpb.Dispose();
                 }
@@ -245,6 +251,66 @@ namespace PlanetPlacementTool
                 Console.Write(@"Nothing to save, no project loaded.");
             }
 #endif
+        }
+        private Vector3 CalculateRelativePosition(Vector3 absolutePosition)
+        {
+            Vector3 relativePosition = new Vector3(0.0f, 0.0f, 10.0f);
+            relativePosition.X = absolutePosition.X / planet_placement_project_.ProjScaleSetting;
+            relativePosition.Y = absolutePosition.Y / planet_placement_project_.ProjScaleSetting;
+#if DEBUG
+            Console.Write("    Converting absolute position {0} to relative position {1}\n", absolutePosition, relativePosition);
+#endif
+            return relativePosition;
+        }
+        private Point ImageSpaceCoordinates(Vector3 relativePosition)
+        {
+            Point imageSpacePosition = new Point(0, 0);
+            int canvasAbsoluteWidth = main_canvas_.Width;
+            float canvasRelativeScaleDenom = canvasAbsoluteWidth;
+            PointF relativePosF = new PointF((relativePosition.X + 1) * 0.5f, (relativePosition.Y - 1) * (-0.5f));
+            imageSpacePosition.X = (int)(relativePosF.X * canvasRelativeScaleDenom);
+            imageSpacePosition.Y = (int)(relativePosF.Y * canvasRelativeScaleDenom);
+#if DEBUG
+            Console.Write("    Converting relative position {0} to relative screen space position {1}\n                                       to absolute screen space position {2}\n", relativePosition, relativePosF, imageSpacePosition);
+            if (imageSpacePosition.X > main_canvas_.Width || imageSpacePosition.Y > main_canvas_.Width)
+            {
+                Console.Write("========== ERROR: Planet is off canvas! ==========\n");
+            }
+#endif
+            return imageSpacePosition;
+        }
+        private Vector3 CalculateAbsolutePosition(Vector3 relativePosition)
+        {
+            Vector3 absolutePosition = new Vector3(0, 0, 10);
+            absolutePosition.X = relativePosition.X * planet_placement_project_.ProjScaleSetting;
+            absolutePosition.Y = relativePosition.Y * planet_placement_project_.ProjScaleSetting;
+            return absolutePosition;
+        }
+        
+        private void DrawPlanet(tool.Planet newPlanet)
+        {
+            drawn_planets_.Add(newPlanet);
+            PictureBox pb = newPlanet.Draw();
+#if DEBUG
+            Console.Write("{0}:\n", newPlanet.Name);
+#endif
+            Point Position = ImageSpaceCoordinates(CalculateRelativePosition(newPlanet.Galactic_Position));
+            Position.X -= 5;
+            Position.Y -= 5;
+            pb.Location = Position;
+            pb.Cursor = Cursors.Cross;
+            canvas_draw_space_.Controls.Add(pb);
+        }
+        private void DrawAllPlanets()
+        {
+            if (planet_placement_project_ != null)
+            {
+                foreach(tool.Planet lp in planet_placement_project_.ProjActivePlanets)
+                {
+                    drawn_planets_.Add(lp);
+                    DrawPlanet(lp);
+                }
+            }
         }
     }
 }
