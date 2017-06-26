@@ -38,6 +38,7 @@ namespace PlanetPlacementTool
                 {
                     npw_planet_list_.Items.Add(filePath);
                 }
+                planet_file_importer_.Dispose();
                 b_planet_set_ = true;
             }
             btn_update_create();
@@ -64,12 +65,13 @@ namespace PlanetPlacementTool
             {
                 s_selected_background_image_ = imagePath.FileName;
                 Image background = Image.FromFile(s_selected_background_image_);
-                galaxy_pic_prev_.Image = background;
-                Bitmap finalBack = new Bitmap(galaxy_pic_prev_.Image, galaxy_pic_prev_.Width, galaxy_pic_prev_.Height);
+                Bitmap finalBack = new Bitmap(background, galaxy_pic_prev_.Width, galaxy_pic_prev_.Height);
                 galaxy_pic_prev_.SizeMode = PictureBoxSizeMode.CenterImage;
                 galaxy_pic_prev_.Image = finalBack;
+                background.Dispose();
                 b_img_set_ = true;
             }
+            imagePath.Dispose();
             btn_update_create();
         }
 
@@ -84,6 +86,7 @@ namespace PlanetPlacementTool
                 s_save_folder = project_save_folder_.SelectedPath;
                 project_path_display_.Text = s_save_folder + "\\" + s_project_name + ".yvaw-pptp";
                 project_path_display_.Enabled = false;
+                project_save_folder_.Dispose();
                 b_path_set_ = true;
             }
             btn_update_create();

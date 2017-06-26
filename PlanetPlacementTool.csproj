@@ -54,6 +54,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockingProgressBar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BlockingProgressBar.Designer.cs">
+      <DependentUpon>BlockingProgressBar.cs</DependentUpon>
+    </Compile>
     <Compile Include="DrawWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,6 +78,9 @@
     <Compile Include="tool\PlanetPlacementProject.cs" />
     <Compile Include="tool\SaveHandler.cs" />
     <Compile Include="tool\XMLHandler.cs" />
+    <EmbeddedResource Include="BlockingProgressBar.resx">
+      <DependentUpon>BlockingProgressBar.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DrawWindow.resx">
       <DependentUpon>DrawWindow.cs</DependentUpon>
     </EmbeddedResource>

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewProjectWindow));
             this.npw_lab_001_ = new System.Windows.Forms.Label();
             this.npw_lab_002_ = new System.Windows.Forms.Label();
             this.npw_lab_003_ = new System.Windows.Forms.Label();
@@ -239,6 +240,7 @@
             this.Controls.Add(this.npw_lab_002_);
             this.Controls.Add(this.npw_lab_003_);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NewProjectWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Create new project ...";

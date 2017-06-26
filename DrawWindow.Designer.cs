@@ -32,6 +32,7 @@
             this.main_tsc_ = new System.Windows.Forms.ToolStripContainer();
             this.main_status_strip_ = new System.Windows.Forms.StatusStrip();
             this.main_status_strip_label01_ = new System.Windows.Forms.ToolStripStatusLabel();
+            this.main_split_container_ = new System.Windows.Forms.SplitContainer();
             this.main_canvas_ = new System.Windows.Forms.Panel();
             this.main_planet_tools_ = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -52,11 +53,18 @@
             this.menu_item_export_all_ = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.main_menu_strip_ = new System.Windows.Forms.MenuStrip();
+            this.main_status_strip_label02_ = new System.Windows.Forms.ToolStripStatusLabel();
+            this.main_status_strip_progressbar_ = new System.Windows.Forms.ToolStripProgressBar();
+            this.planet_display_ = new System.Windows.Forms.ListBox();
             this.main_tsc_.BottomToolStripPanel.SuspendLayout();
             this.main_tsc_.ContentPanel.SuspendLayout();
             this.main_tsc_.TopToolStripPanel.SuspendLayout();
             this.main_tsc_.SuspendLayout();
             this.main_status_strip_.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.main_split_container_)).BeginInit();
+            this.main_split_container_.Panel1.SuspendLayout();
+            this.main_split_container_.Panel2.SuspendLayout();
+            this.main_split_container_.SuspendLayout();
             this.main_planet_tools_.SuspendLayout();
             this.main_menu_strip_.SuspendLayout();
             this.SuspendLayout();
@@ -70,7 +78,7 @@
             // 
             // main_tsc_.ContentPanel
             // 
-            this.main_tsc_.ContentPanel.Controls.Add(this.main_canvas_);
+            this.main_tsc_.ContentPanel.Controls.Add(this.main_split_container_);
             this.main_tsc_.ContentPanel.Size = new System.Drawing.Size(784, 490);
             this.main_tsc_.Dock = System.Windows.Forms.DockStyle.Fill;
             this.main_tsc_.Location = new System.Drawing.Point(0, 24);
@@ -87,7 +95,9 @@
             // 
             this.main_status_strip_.Dock = System.Windows.Forms.DockStyle.None;
             this.main_status_strip_.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.main_status_strip_label01_});
+            this.main_status_strip_label01_,
+            this.main_status_strip_label02_,
+            this.main_status_strip_progressbar_});
             this.main_status_strip_.Location = new System.Drawing.Point(0, 0);
             this.main_status_strip_.Name = "main_status_strip_";
             this.main_status_strip_.Size = new System.Drawing.Size(784, 22);
@@ -99,17 +109,35 @@
             this.main_status_strip_label01_.Size = new System.Drawing.Size(127, 17);
             this.main_status_strip_label01_.Text = "Loaded project: [none]";
             // 
+            // main_split_container_
+            // 
+            this.main_split_container_.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.main_split_container_.Location = new System.Drawing.Point(0, 0);
+            this.main_split_container_.Name = "main_split_container_";
+            // 
+            // main_split_container_.Panel1
+            // 
+            this.main_split_container_.Panel1.Controls.Add(this.planet_display_);
+            // 
+            // main_split_container_.Panel2
+            // 
+            this.main_split_container_.Panel2.AutoScroll = true;
+            this.main_split_container_.Panel2.Controls.Add(this.main_canvas_);
+            this.main_split_container_.Size = new System.Drawing.Size(784, 490);
+            this.main_split_container_.SplitterDistance = 261;
+            this.main_split_container_.TabIndex = 1;
+            // 
             // main_canvas_
             // 
             this.main_canvas_.AutoScroll = true;
-            this.main_canvas_.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.main_canvas_.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.main_canvas_.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.main_canvas_.Dock = System.Windows.Forms.DockStyle.Fill;
             this.main_canvas_.Location = new System.Drawing.Point(0, 0);
             this.main_canvas_.Name = "main_canvas_";
-            this.main_canvas_.Size = new System.Drawing.Size(784, 490);
+            this.main_canvas_.Size = new System.Drawing.Size(519, 490);
             this.main_canvas_.TabIndex = 0;
+            this.main_canvas_.Paint += new System.Windows.Forms.PaintEventHandler(this.main_canvas__Paint);
+            this.main_canvas_.Resize += new System.EventHandler(this.main_canvas__Resize);
             // 
             // main_planet_tools_
             // 
@@ -166,7 +194,7 @@
             // menu_item_file_new_
             // 
             this.menu_item_file_new_.Name = "menu_item_file_new_";
-            this.menu_item_file_new_.Size = new System.Drawing.Size(107, 22);
+            this.menu_item_file_new_.Size = new System.Drawing.Size(152, 22);
             this.menu_item_file_new_.Text = "New...";
             this.menu_item_file_new_.ToolTipText = "Create a new project...";
             this.menu_item_file_new_.Click += new System.EventHandler(this.menu_item_file_new__Click);
@@ -174,12 +202,12 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(104, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // menu_item_file_open_
             // 
             this.menu_item_file_open_.Name = "menu_item_file_open_";
-            this.menu_item_file_open_.Size = new System.Drawing.Size(107, 22);
+            this.menu_item_file_open_.Size = new System.Drawing.Size(152, 22);
             this.menu_item_file_open_.Text = "Open";
             this.menu_item_file_open_.ToolTipText = "Open an existing project...";
             this.menu_item_file_open_.Click += new System.EventHandler(this.menu_item_file_open__Click);
@@ -187,7 +215,7 @@
             // menu_item_file_close_
             // 
             this.menu_item_file_close_.Name = "menu_item_file_close_";
-            this.menu_item_file_close_.Size = new System.Drawing.Size(107, 22);
+            this.menu_item_file_close_.Size = new System.Drawing.Size(152, 22);
             this.menu_item_file_close_.Text = "Close";
             this.menu_item_file_close_.ToolTipText = "Close the current project...";
             this.menu_item_file_close_.Click += new System.EventHandler(this.menu_item_file_close__Click);
@@ -195,12 +223,12 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(104, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // menu_item_file_save_
             // 
             this.menu_item_file_save_.Name = "menu_item_file_save_";
-            this.menu_item_file_save_.Size = new System.Drawing.Size(107, 22);
+            this.menu_item_file_save_.Size = new System.Drawing.Size(152, 22);
             this.menu_item_file_save_.Text = "Save";
             this.menu_item_file_save_.ToolTipText = "Save the current project...";
             this.menu_item_file_save_.Click += new System.EventHandler(this.menu_item_file_save__Click);
@@ -219,7 +247,7 @@
             // menu_item_export_planets_
             // 
             this.menu_item_export_planets_.Name = "menu_item_export_planets_";
-            this.menu_item_export_planets_.Size = new System.Drawing.Size(136, 22);
+            this.menu_item_export_planets_.Size = new System.Drawing.Size(152, 22);
             this.menu_item_export_planets_.Text = "Planets";
             this.menu_item_export_planets_.ToolTipText = "Export your planets to xml.";
             this.menu_item_export_planets_.Click += new System.EventHandler(this.menu_item_export_planets__Click);
@@ -228,20 +256,20 @@
             // 
             this.menu_item_export_traderoutes_.Enabled = false;
             this.menu_item_export_traderoutes_.Name = "menu_item_export_traderoutes_";
-            this.menu_item_export_traderoutes_.Size = new System.Drawing.Size(136, 22);
+            this.menu_item_export_traderoutes_.Size = new System.Drawing.Size(152, 22);
             this.menu_item_export_traderoutes_.Text = "Traderoutes";
             this.menu_item_export_traderoutes_.ToolTipText = "Export your traderoutes to xml.";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(133, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
             // 
             // menu_item_export_all_
             // 
             this.menu_item_export_all_.Enabled = false;
             this.menu_item_export_all_.Name = "menu_item_export_all_";
-            this.menu_item_export_all_.Size = new System.Drawing.Size(136, 22);
+            this.menu_item_export_all_.Size = new System.Drawing.Size(152, 22);
             this.menu_item_export_all_.Text = "All";
             this.menu_item_export_all_.ToolTipText = "Export your planets and traderoutes to xml.";
             // 
@@ -265,6 +293,30 @@
             this.main_menu_strip_.TabIndex = 0;
             this.main_menu_strip_.Text = "menuStrip1";
             // 
+            // main_status_strip_label02_
+            // 
+            this.main_status_strip_label02_.Name = "main_status_strip_label02_";
+            this.main_status_strip_label02_.Size = new System.Drawing.Size(0, 17);
+            // 
+            // main_status_strip_progressbar_
+            // 
+            this.main_status_strip_progressbar_.Enabled = false;
+            this.main_status_strip_progressbar_.MarqueeAnimationSpeed = 10;
+            this.main_status_strip_progressbar_.Name = "main_status_strip_progressbar_";
+            this.main_status_strip_progressbar_.Size = new System.Drawing.Size(100, 16);
+            this.main_status_strip_progressbar_.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.main_status_strip_progressbar_.Visible = false;
+            // 
+            // planet_display_
+            // 
+            this.planet_display_.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.planet_display_.FormattingEnabled = true;
+            this.planet_display_.Location = new System.Drawing.Point(0, 0);
+            this.planet_display_.Name = "planet_display_";
+            this.planet_display_.Size = new System.Drawing.Size(261, 490);
+            this.planet_display_.Sorted = true;
+            this.planet_display_.TabIndex = 0;
+            // 
             // DrawWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -286,6 +338,10 @@
             this.main_tsc_.PerformLayout();
             this.main_status_strip_.ResumeLayout(false);
             this.main_status_strip_.PerformLayout();
+            this.main_split_container_.Panel1.ResumeLayout(false);
+            this.main_split_container_.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.main_split_container_)).EndInit();
+            this.main_split_container_.ResumeLayout(false);
             this.main_planet_tools_.ResumeLayout(false);
             this.main_planet_tools_.PerformLayout();
             this.main_menu_strip_.ResumeLayout(false);
@@ -319,6 +375,10 @@
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.SplitContainer main_split_container_;
+        private System.Windows.Forms.ToolStripStatusLabel main_status_strip_label02_;
+        private System.Windows.Forms.ToolStripProgressBar main_status_strip_progressbar_;
+        private System.Windows.Forms.ListBox planet_display_;
     }
 }
 

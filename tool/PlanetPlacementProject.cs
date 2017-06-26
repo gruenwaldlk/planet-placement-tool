@@ -13,15 +13,16 @@ namespace PlanetPlacementTool.tool
         public IList<string> TraderoutesXMLPaths { get; set; }
         public string BackgroundImagePath { get; set; }
         public int ProjScaleSetting { get; set; }
-        public IList<string> ProjActivePlanets { get; set; }
+        public IList<Planet> ProjActivePlanets { get; set; }
         public IList<string> ProjActiveTraderoutes { get; set; }
 
+        public PlanetPlacementProject() { }
         public PlanetPlacementProject(string newProjectName, string[] newPlanetPaths, string newBackgroundImagePath)
         {
             ProjectName = newProjectName;
             PlanetsXMLPaths = new List<string>();
             TraderoutesXMLPaths = new List<string>();
-            ProjActivePlanets = new List<string>();
+            ProjActivePlanets = new List<Planet>();
             ProjActiveTraderoutes = new List<string>();
             foreach (string path in newPlanetPaths)
             {
@@ -30,7 +31,7 @@ namespace PlanetPlacementTool.tool
             BackgroundImagePath = newBackgroundImagePath;
             ProjScaleSetting = 500;
         }
-        public PlanetPlacementProject(string newProjectName,IList<string> newPlanetPaths,IList<string> newTraderoutesXMLPaths,string newBackgroundImagePath,int newProjScaleSetting,IList<string> newProjActivePlanets,IList<string> newProjActiveTraderoutes)
+        public PlanetPlacementProject(string newProjectName,IList<string> newPlanetPaths,IList<string> newTraderoutesXMLPaths,string newBackgroundImagePath,int newProjScaleSetting,IList<Planet> newProjActivePlanets,IList<string> newProjActiveTraderoutes)
         {
             ProjectName = newProjectName;
             PlanetsXMLPaths = newPlanetPaths;
