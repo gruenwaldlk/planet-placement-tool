@@ -74,6 +74,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="tool\Global.cs" />
     <Compile Include="tool\Planet.cs" />
     <Compile Include="tool\PlanetPlacementProject.cs" />
     <Compile Include="tool\SaveHandler.cs" />

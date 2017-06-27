@@ -20,7 +20,6 @@ namespace PlanetPlacementTool
         public string project_save_folder_ { get; set; }
         private tool.SaveHandler save_handler_ = new tool.SaveHandler();
         private Bitmap buffer_grid_;
-        private List<tool.Planet> drawn_planets_ = new List<tool.Planet>();
         public DrawWindow()
         {
             InitializeComponent();
@@ -40,25 +39,24 @@ namespace PlanetPlacementTool
                 {
                     planet_placement_project_ = new_project_dialogue_.planet_placement_tool_;
                     project_save_folder_ = new_project_dialogue_.export_path_;
-                    main_status_strip_label01_.Text = "Loaded project: " + project_save_folder_ + "\\" + planet_placement_project_.ProjectName + ".yvaw-pptp";
-#if DEBUG
-                    string output = JsonConvert.SerializeObject(planet_placement_project_, Formatting.Indented);
-                    Console.Write(output);
-#endif
                     created = true;
                 }
             }
             if (created)
             {
+                Enabled = false;
+                main_status_strip_label01_.Text = "Creating project: " + project_save_folder_ + "\\" + planet_placement_project_.ProjectName + ".yvaw-pptp";
+                tool.Global.PROJECT_SCALE_ = planet_placement_project_.ProjScaleSetting;
                 create_resources();
                 set_canvas_background();
-                Save();
                 ThreadedParseFiles();
             }
         }
 
         private void menu_item_file_open__Click(object sender, EventArgs e)
         {
+            string loadFile = "";
+            bool loaded = false;
             using(OpenFileDialog chooseProject = new OpenFileDialog())
             {
                 chooseProject.Filter = "planet placement files (*.yvaw-pptp)|*.yvaw-pptp";
@@ -67,19 +65,14 @@ namespace PlanetPlacementTool
                 DialogResult result = chooseProject.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    canvas_draw_space_.Controls.Clear();
-                    string fileContent = File.ReadAllText(chooseProject.FileName);
-                    planet_placement_project_ = JsonConvert.DeserializeObject<tool.PlanetPlacementProject>(fileContent);
-#if DEBUG
-                    Console.WriteLine("Project name:    " + planet_placement_project_.ProjectName);
-                    Console.WriteLine("Background Path:    " + planet_placement_project_.BackgroundImagePath);
-#endif
-                    set_canvas_background();
-                    Populate_Planet_Display();
-                    DrawAllPlanets();
-
-                    main_status_strip_label01_.Text = "Loaded project: " + chooseProject.FileName;
+                    loadFile = chooseProject.FileName;
+                    project_save_folder_ = Path.GetDirectoryName(chooseProject.FileName);
+                    loaded = true;
                 }
+            }
+            if (loaded)
+            {
+                ThreadedLoadFromFile(loadFile);
             }
         }
 
@@ -186,11 +179,9 @@ namespace PlanetPlacementTool
                 buffer_grid_.Height < main_canvas_.Height)
             {
                 Bitmap newBuffer = new Bitmap(main_canvas_.Width, main_canvas_.Height);
-                //if (buffer_grid_ != null)
-                    //using (Graphics bufferGrph = Graphics.FromImage(newBuffer))
-                        //bufferGrph.DrawImageUnscaled(buffer_grid_, Point.Empty);
                 buffer_grid_ = newBuffer;
             }
+            tool.Global.CANVAS_SIZE_ = main_canvas_.Width;
         }
         private void ThreadedParseFiles()
         {
@@ -204,9 +195,11 @@ namespace PlanetPlacementTool
             parser.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs e) => {
                 if (bpb != null && bpb.Visible)
                 {
-                    this.Enabled = true;
                     Populate_Planet_Display();
                     DrawAllPlanets();
+                    Save();
+                    main_status_strip_label01_.Text = "Loaded project: " + project_save_folder_ + "\\" + planet_placement_project_.ProjectName + ".yvaw-pptp";
+                    Enabled = true;
                     bpb.Close();
                     bpb.Dispose();
                 }
@@ -237,13 +230,7 @@ namespace PlanetPlacementTool
         {
             if (planet_placement_project_ != null)
             {
-                main_status_strip_label02_.Text = "Saving ...";
-                main_status_strip_progressbar_.Enabled = true;
-                main_status_strip_progressbar_.Visible = true;
-                save_handler_.SaveToFile(project_save_folder_, planet_placement_project_.ProjectName, JsonConvert.SerializeObject(planet_placement_project_, Formatting.Indented));
-                main_status_strip_progressbar_.Visible = false;
-                main_status_strip_progressbar_.Enabled = false;
-                main_status_strip_label02_.Text = "";
+                ThreadedSaveToFile();
             }
 #if DEBUG
             else
@@ -252,53 +239,68 @@ namespace PlanetPlacementTool
             }
 #endif
         }
-        private Vector3 CalculateRelativePosition(Vector3 absolutePosition)
+
+        public void SaveToFile()
         {
-            Vector3 relativePosition = new Vector3(0.0f, 0.0f, 10.0f);
-            relativePosition.X = absolutePosition.X / planet_placement_project_.ProjScaleSetting;
-            relativePosition.Y = absolutePosition.Y / planet_placement_project_.ProjScaleSetting;
-#if DEBUG
-            Console.Write("    Converting absolute position {0} to relative position {1}\n", absolutePosition, relativePosition);
-#endif
-            return relativePosition;
+            save_handler_.SaveToFile(project_save_folder_, planet_placement_project_.ProjectName, JsonConvert.SerializeObject(planet_placement_project_, Formatting.Indented));
         }
-        private Point ImageSpaceCoordinates(Vector3 relativePosition)
+
+        private void ThreadedSaveToFile()
         {
-            Point imageSpacePosition = new Point(0, 0);
-            int canvasAbsoluteWidth = main_canvas_.Width;
-            float canvasRelativeScaleDenom = canvasAbsoluteWidth;
-            PointF relativePosF = new PointF((relativePosition.X + 1) * 0.5f, (relativePosition.Y - 1) * (-0.5f));
-            imageSpacePosition.X = (int)(relativePosF.X * canvasRelativeScaleDenom);
-            imageSpacePosition.Y = (int)(relativePosF.Y * canvasRelativeScaleDenom);
-#if DEBUG
-            Console.Write("    Converting relative position {0} to relative screen space position {1}\n                                       to absolute screen space position {2}\n", relativePosition, relativePosF, imageSpacePosition);
-            if (imageSpacePosition.X > main_canvas_.Width || imageSpacePosition.Y > main_canvas_.Width)
+            Action exec = SaveToFile;
+            BackgroundWorker saveHandler = new BackgroundWorker();
+            saveHandler.DoWork += (object sender, DoWorkEventArgs e) =>
             {
-                Console.Write("========== ERROR: Planet is off canvas! ==========\n");
-            }
-#endif
-            return imageSpacePosition;
+                exec.Invoke();
+            };
+            saveHandler.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs e) => {
+                    main_status_strip_label02_.Text = "";
+            };
+            main_status_strip_label02_.Text = "Saving ...";
+            saveHandler.RunWorkerAsync();
         }
-        private Vector3 CalculateAbsolutePosition(Vector3 relativePosition)
+
+        private void LoadFromFile(string fileToLoad)
         {
-            Vector3 absolutePosition = new Vector3(0, 0, 10);
-            absolutePosition.X = relativePosition.X * planet_placement_project_.ProjScaleSetting;
-            absolutePosition.Y = relativePosition.Y * planet_placement_project_.ProjScaleSetting;
-            return absolutePosition;
+            string fileContent = File.ReadAllText(fileToLoad);
+            planet_placement_project_ = JsonConvert.DeserializeObject<tool.PlanetPlacementProject>(fileContent);
+            tool.Global.PROJECT_SCALE_ = planet_placement_project_.ProjScaleSetting;
         }
-        
+
+        private void ThreadedLoadFromFile(string LoadFile)
+        {
+            Action<string> exec = LoadFromFile;
+            BackgroundWorker loadHandler = new BackgroundWorker();
+            loadHandler.DoWork += (object sender, DoWorkEventArgs e) =>
+            {
+                exec.Invoke(LoadFile);
+            };
+            loadHandler.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs e) => {
+                Enabled = false;
+                set_canvas_background();
+                Populate_Planet_Display();
+                DrawAllPlanets();
+                Enabled = true;
+                if (main_status_strip_progressbar_ != null)
+                {
+                    main_status_strip_progressbar_.Visible = false;
+                    main_status_strip_progressbar_.Enabled = false;
+                }
+                main_status_strip_label01_.Text = "Loaded project: " + LoadFile;
+            };
+            main_status_strip_label01_.Text = "Loading project: " + LoadFile;
+            canvas_draw_space_.Controls.Clear();
+            main_status_strip_progressbar_.Visible = true;
+            main_status_strip_progressbar_.Enabled = true;
+            loadHandler.RunWorkerAsync();
+        }
+
         private void DrawPlanet(tool.Planet newPlanet)
         {
-            drawn_planets_.Add(newPlanet);
             PictureBox pb = newPlanet.Draw();
 #if DEBUG
             Console.Write("{0}:\n", newPlanet.Name);
 #endif
-            Point Position = ImageSpaceCoordinates(CalculateRelativePosition(newPlanet.Galactic_Position));
-            Position.X -= 5;
-            Position.Y -= 5;
-            pb.Location = Position;
-            pb.Cursor = Cursors.Cross;
             canvas_draw_space_.Controls.Add(pb);
         }
         private void DrawAllPlanets()
@@ -307,10 +309,20 @@ namespace PlanetPlacementTool
             {
                 foreach(tool.Planet lp in planet_placement_project_.ProjActivePlanets)
                 {
-                    drawn_planets_.Add(lp);
                     DrawPlanet(lp);
                 }
             }
         }
+
+        private void planet_tools_add__Click(object sender, EventArgs e)
+        {
+            tool.Global.APP_STATE_ = tool.ToolState.ADD_REMOVE_;
+        }
+
+        private void planet_tools_select_move__Click(object sender, EventArgs e)
+        {
+            tool.Global.APP_STATE_ = tool.ToolState.SELECT_MOVE_;
+        }
+
     }
 }

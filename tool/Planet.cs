@@ -48,8 +48,16 @@ namespace PlanetPlacementTool.tool
             //Representation.BackColor = System.Drawing.Color.PaleGreen;
             Representation.Paint += new System.Windows.Forms.PaintEventHandler(Representation_Paint);
             Representation.MouseEnter += new System.EventHandler(Representation_MouseEnter);
+            Representation.MouseDown += new System.Windows.Forms.MouseEventHandler(Representation_MouseDown);
+            Representation.MouseMove += new System.Windows.Forms.MouseEventHandler(Representation_MouseMove);
+            Representation.MouseUp += new System.Windows.Forms.MouseEventHandler(Representation_MouseUp);
             System.Windows.Forms.ToolTip ttip = new System.Windows.Forms.ToolTip();
             ttip.SetToolTip(Representation, Name);
+            System.Drawing.Point Position = ImageSpaceCoordinates(CalculateRelativePositionFromGCPosition(Galactic_Position));
+            Position.X -= 10;
+            Position.Y -= 10;
+            Representation.Cursor = System.Windows.Forms.Cursors.Cross;
+            Representation.Location = Position;
             return Representation;
         }
         private void Representation_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
@@ -66,6 +74,130 @@ namespace PlanetPlacementTool.tool
         private void Representation_MouseEnter(object sender, EventArgs e)
         {
             Console.Write("Mouse over {0}\n", Name);
+        }
+        private void Representation_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            ToolState CurrAppState = Global.APP_STATE_;
+            switch (CurrAppState)
+            {
+                case ToolState.SELECT_MOVE_:
+                    if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                    {
+#if DEBUG
+                        Console.Write(Global.APP_SELECT_MOVE_);
+#endif
+                    }
+                    break;
+                case ToolState.ADD_REMOVE_:
+#if DEBUG
+                    Console.Write(Global.APP_ADD_REMOVE_);
+#endif
+                    break;
+                default:
+#if DEBUG
+                    Console.Write(Global.APP_STATE_DEFAULT_CASE_);
+#endif
+                    break;
+            }
+        }
+
+        private void Representation_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            ToolState CurrAppState = Global.APP_STATE_;
+            switch (CurrAppState)
+            {
+                case ToolState.SELECT_MOVE_:
+                    if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                    {
+                        System.Drawing.Point tempLocation = Representation.Parent.PointToClient(System.Windows.Forms.Cursor.Position);
+                        tempLocation.X = Global.Clamp(tempLocation.X, Global.CANVAS_SIZE_, 0) - 10;
+                        tempLocation.Y = Global.Clamp(tempLocation.Y, Global.CANVAS_SIZE_, 0) - 10;
+                        Representation.Location = tempLocation;
+#if DEBUG
+                        Console.Write("New location {0}\n", Representation.Location);
+#endif
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void Representation_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            ToolState CurrAppState = Global.APP_STATE_;
+            switch (CurrAppState)
+            {
+                case ToolState.SELECT_MOVE_:
+                    if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                    {
+                        System.Drawing.Point newPlanetLocation = Representation.Location;
+                        System.Drawing.PointF newRelativePlanetLocation = CalculateRelativePositionFromWindowposition(newPlanetLocation);
+                        Vector3 NewGalacticCoordinates = GalacticSpaceCoordinates(newRelativePlanetLocation);
+                        Galactic_Position = NewGalacticCoordinates;
+
+#if DEBUG
+                        Console.Write("New absolute planet location {0}\n", newPlanetLocation);
+                        Console.Write("New relative planet location {0}\n", newRelativePlanetLocation);
+                        Console.Write("New galactic planet location {0}\n", NewGalacticCoordinates);
+#endif
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        private Vector3 CalculateRelativePositionFromGCPosition(Vector3 absolutePosition)
+        {
+            Vector3 relativePosition = new Vector3(0.0f, 0.0f, 10.0f);
+            relativePosition.X = absolutePosition.X / tool.Global.PROJECT_SCALE_;
+            relativePosition.Y = absolutePosition.Y / tool.Global.PROJECT_SCALE_;
+#if DEBUG
+            Console.Write("    Converting absolute position {0} to relative position {1}\n", absolutePosition, relativePosition);
+#endif
+            return relativePosition;
+        }
+        private System.Drawing.PointF CalculateRelativePositionFromWindowposition(System.Drawing.Point newPlanetLocation)
+        {
+            newPlanetLocation.X += 10;
+            newPlanetLocation.Y += 10;
+            System.Drawing.PointF newRelativePlanetLocation = newPlanetLocation;
+            newRelativePlanetLocation.X = Global.Clamp(newRelativePlanetLocation.X / Representation.Parent.Width, 1.0f, 0);
+            newRelativePlanetLocation.Y = Global.Clamp(newRelativePlanetLocation.Y / Representation.Parent.Width, 1.0f, 0);
+#if DEBUG
+            Console.Write("    Converting absolute position {0} to relative position {1}\n", newPlanetLocation, newRelativePlanetLocation);
+#endif
+            return newRelativePlanetLocation;
+        }
+        private System.Drawing.Point ImageSpaceCoordinates(Vector3 relativePosition)
+        {
+            System.Drawing.Point imageSpacePosition = new System.Drawing.Point(0, 0);
+            int canvasAbsoluteWidth = tool.Global.CANVAS_SIZE_;
+            float canvasRelativeScaleDenom = canvasAbsoluteWidth;
+            System.Drawing.PointF relativePosF = new System.Drawing.PointF((relativePosition.X + 1) * 0.5f, (relativePosition.Y - 1) * (-0.5f));
+            imageSpacePosition.X = (int)(relativePosF.X * canvasRelativeScaleDenom);
+            imageSpacePosition.Y = (int)(relativePosF.Y * canvasRelativeScaleDenom);
+            return imageSpacePosition;
+        }
+        private Vector3 GalacticSpaceCoordinates(System.Drawing.PointF relativePosition)
+        {
+            Vector3 NewGalacticCoordinates = new Vector3(0.0f, 0.0f, 10.0f);
+            System.Drawing.PointF relativePosF = new System.Drawing.PointF((relativePosition.X * 2.0f) - 1.0f, (relativePosition.Y * (-2.0f)) + 1.0f);
+            relativePosF.X = tool.Global.Clamp(relativePosF.X, 1.0f, -1.0f);
+            relativePosF.Y = tool.Global.Clamp(relativePosF.Y, 1.0f, -1.0f);
+            relativePosF.X = relativePosF.X * tool.Global.PROJECT_SCALE_;
+            relativePosF.Y = relativePosF.Y * tool.Global.PROJECT_SCALE_;
+
+            NewGalacticCoordinates.X = (int)relativePosF.X;
+            NewGalacticCoordinates.Y = (int)relativePosF.Y;
+
+            return NewGalacticCoordinates;
+        }
+        private Vector3 CalculateAbsolutePosition(Vector3 relativePosition)
+        {
+            Vector3 absolutePosition = new Vector3(0, 0, 10);
+            absolutePosition.X = relativePosition.X * tool.Global.PROJECT_SCALE_;
+            absolutePosition.Y = relativePosition.Y * tool.Global.PROJECT_SCALE_;
+            return absolutePosition;
         }
     }
 }

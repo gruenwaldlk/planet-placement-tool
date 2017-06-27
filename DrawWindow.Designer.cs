@@ -40,8 +40,8 @@
             this.canvas_draw_space_ = new System.Windows.Forms.PictureBox();
             this.main_planet_tools_ = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.planet_tools_add_ = new System.Windows.Forms.ToolStripButton();
+            this.planet_tools_select_move_ = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.menu_item_file_ = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_item_file_new_ = new System.Windows.Forms.ToolStripMenuItem();
@@ -119,10 +119,12 @@
             // 
             // main_status_strip_progressbar_
             // 
+            this.main_status_strip_progressbar_.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.main_status_strip_progressbar_.Enabled = false;
             this.main_status_strip_progressbar_.MarqueeAnimationSpeed = 10;
             this.main_status_strip_progressbar_.Name = "main_status_strip_progressbar_";
-            this.main_status_strip_progressbar_.Size = new System.Drawing.Size(100, 16);
+            this.main_status_strip_progressbar_.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.main_status_strip_progressbar_.Size = new System.Drawing.Size(120, 16);
             this.main_status_strip_progressbar_.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.main_status_strip_progressbar_.Visible = false;
             // 
@@ -184,8 +186,8 @@
             this.main_planet_tools_.Dock = System.Windows.Forms.DockStyle.None;
             this.main_planet_tools_.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator4,
-            this.toolStripButton1,
-            this.toolStripButton2,
+            this.planet_tools_add_,
+            this.planet_tools_select_move_,
             this.toolStripSeparator5});
             this.main_planet_tools_.Location = new System.Drawing.Point(3, 0);
             this.main_planet_tools_.Name = "main_planet_tools_";
@@ -197,21 +199,23 @@
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton1
+            // planet_tools_add_
             // 
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(85, 22);
-            this.toolStripButton1.Text = "Add Planet";
+            this.planet_tools_add_.Image = ((System.Drawing.Image)(resources.GetObject("planet_tools_add_.Image")));
+            this.planet_tools_add_.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.planet_tools_add_.Name = "planet_tools_add_";
+            this.planet_tools_add_.Size = new System.Drawing.Size(85, 22);
+            this.planet_tools_add_.Text = "Add Planet";
+            this.planet_tools_add_.Click += new System.EventHandler(this.planet_tools_add__Click);
             // 
-            // toolStripButton2
+            // planet_tools_select_move_
             // 
-            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(114, 22);
-            this.toolStripButton2.Text = "Select and Move";
+            this.planet_tools_select_move_.Image = ((System.Drawing.Image)(resources.GetObject("planet_tools_select_move_.Image")));
+            this.planet_tools_select_move_.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.planet_tools_select_move_.Name = "planet_tools_select_move_";
+            this.planet_tools_select_move_.Size = new System.Drawing.Size(114, 22);
+            this.planet_tools_select_move_.Text = "Select and Move";
+            this.planet_tools_select_move_.Click += new System.EventHandler(this.planet_tools_select_move__Click);
             // 
             // toolStripSeparator5
             // 
@@ -234,7 +238,7 @@
             // menu_item_file_new_
             // 
             this.menu_item_file_new_.Name = "menu_item_file_new_";
-            this.menu_item_file_new_.Size = new System.Drawing.Size(107, 22);
+            this.menu_item_file_new_.Size = new System.Drawing.Size(152, 22);
             this.menu_item_file_new_.Text = "New...";
             this.menu_item_file_new_.ToolTipText = "Create a new project...";
             this.menu_item_file_new_.Click += new System.EventHandler(this.menu_item_file_new__Click);
@@ -242,12 +246,12 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(104, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // menu_item_file_open_
             // 
             this.menu_item_file_open_.Name = "menu_item_file_open_";
-            this.menu_item_file_open_.Size = new System.Drawing.Size(107, 22);
+            this.menu_item_file_open_.Size = new System.Drawing.Size(152, 22);
             this.menu_item_file_open_.Text = "Open";
             this.menu_item_file_open_.ToolTipText = "Open an existing project...";
             this.menu_item_file_open_.Click += new System.EventHandler(this.menu_item_file_open__Click);
@@ -255,7 +259,7 @@
             // menu_item_file_close_
             // 
             this.menu_item_file_close_.Name = "menu_item_file_close_";
-            this.menu_item_file_close_.Size = new System.Drawing.Size(107, 22);
+            this.menu_item_file_close_.Size = new System.Drawing.Size(152, 22);
             this.menu_item_file_close_.Text = "Close";
             this.menu_item_file_close_.ToolTipText = "Close the current project...";
             this.menu_item_file_close_.Click += new System.EventHandler(this.menu_item_file_close__Click);
@@ -263,12 +267,12 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(104, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // menu_item_file_save_
             // 
             this.menu_item_file_save_.Name = "menu_item_file_save_";
-            this.menu_item_file_save_.Size = new System.Drawing.Size(107, 22);
+            this.menu_item_file_save_.Size = new System.Drawing.Size(152, 22);
             this.menu_item_file_save_.Text = "Save";
             this.menu_item_file_save_.ToolTipText = "Save the current project...";
             this.menu_item_file_save_.Click += new System.EventHandler(this.menu_item_file_save__Click);
@@ -390,8 +394,8 @@
         private System.Windows.Forms.ToolStripStatusLabel main_status_strip_label01_;
         private System.Windows.Forms.ToolStrip main_planet_tools_;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
-        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolStripButton planet_tools_add_;
+        private System.Windows.Forms.ToolStripButton planet_tools_select_move_;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.SplitContainer main_split_container_;
         private System.Windows.Forms.ToolStripStatusLabel main_status_strip_label02_;

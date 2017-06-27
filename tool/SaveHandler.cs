@@ -15,6 +15,7 @@ namespace PlanetPlacementTool.tool
         public void SaveToFile(string path, string filename, string content)
         {
             string filepath = path + "\\" + filename + ".yvaw-pptp";
+            Console.Write("Saving to {0}\n", filepath);
             System.IO.File.WriteAllText(@filepath, content);
         }
     }
