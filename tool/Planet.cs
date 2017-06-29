@@ -32,12 +32,13 @@ namespace PlanetPlacementTool.tool
         {
             Vector3 retVec3 = new Vector3(0, 0, 0);
             string[] v3 = ConvertVal.Split(new Char[] {','});
-            retVec3.X = float.Parse(v3[0]);
-            retVec3.Y = float.Parse(v3[1]);
+
+            retVec3.X = float.Parse(v3[0], new System.Globalization.CultureInfo("en-US").NumberFormat);
+            retVec3.Y = float.Parse(v3[1], new System.Globalization.CultureInfo("en-US").NumberFormat);
             // we omitt the Z-value
             retVec3.Z = 10;
 #if DEBUG
-            Console.WriteLine("String to V3 conversion\t{0}: {1} {2} {3}", ConvertVal, retVec3.X.ToString("n1"), retVec3.Y.ToString("n1"), retVec3.Z.ToString("n1"));
+            Console.WriteLine("String to V3 conversion\t{0}: {1}\nWas created from\t: {2} {3} {4}\n", ConvertVal, retVec3, v3[0], v3[1], v3[2]);
 #endif
             return retVec3;
         }
