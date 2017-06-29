@@ -21,11 +21,35 @@ namespace PlanetPlacementTool.tool
         {
             Name = newName;
             Galactic_Position = newPosition;
+            int absX = (int)Galactic_Position.X;
+            int absY = (int)Galactic_Position.Y;
+            if (absX < 0)
+                absX = absX * (-1);
+            if (absY < 0)
+                absY = absY * (-1);
+            if (absX > tool.Global.PROJECT_SCALE_)
+                tool.Global.PROJECT_SCALE_ = absX + tool.Global.PROJECT_SCALE_VARIANT_;
+            if (absY > tool.Global.PROJECT_SCALE_)
+                tool.Global.PROJECT_SCALE_ = absY + tool.Global.PROJECT_SCALE_VARIANT_;
+            if (tool.Global.PROJECT_SCALE_ > tool.Global.PROJECT_MAX_SCALE_)
+                 tool.Global.PROJECT_MAX_SCALE_ = tool.Global.PROJECT_SCALE_;
         }
         public Planet(string newName, String newPosition)
         {
             Name = newName;
             Galactic_Position = ConvertStringToV3(newPosition);
+            int absX = (int)Galactic_Position.X;
+            int absY = (int)Galactic_Position.Y;
+            if (absX < 0)
+                absX = absX * (-1);
+            if (absY < 0)
+                absY = absY * (-1);
+            if (absX > tool.Global.PROJECT_SCALE_)
+                tool.Global.PROJECT_SCALE_ = absX + tool.Global.PROJECT_SCALE_VARIANT_;
+            if (absY > tool.Global.PROJECT_SCALE_)
+                tool.Global.PROJECT_SCALE_ = absY + tool.Global.PROJECT_SCALE_VARIANT_;
+            if (tool.Global.PROJECT_SCALE_ > tool.Global.PROJECT_MAX_SCALE_)
+                tool.Global.PROJECT_MAX_SCALE_ = tool.Global.PROJECT_SCALE_;
         }
 
         private Vector3 ConvertStringToV3(string ConvertVal)
@@ -187,8 +211,8 @@ namespace PlanetPlacementTool.tool
         private Vector3 CalculateRelativePositionFromGCPosition(Vector3 absolutePosition)
         {
             Vector3 relativePosition = new Vector3(0.0f, 0.0f, 10.0f);
-            relativePosition.X = absolutePosition.X / tool.Global.PROJECT_SCALE_;
-            relativePosition.Y = absolutePosition.Y / tool.Global.PROJECT_SCALE_;
+            relativePosition.X = tool.Global.Clamp(absolutePosition.X / tool.Global.PROJECT_SCALE_, 1.0f, -1.0f);
+            relativePosition.Y = tool.Global.Clamp(absolutePosition.Y / tool.Global.PROJECT_SCALE_, 1.0f, -1.0f);
 #if DEBUG
             Console.Write("    Converting absolute position {0} to relative position {1}\n", absolutePosition, relativePosition);
 #endif

@@ -58,7 +58,7 @@ namespace PlanetPlacementTool
                 main_status_strip_label01_.Text = "Creating project: " + project_save_folder_ + "\\" + planet_placement_project_.ProjectName + ".yvaw-pptp";
                 create_resources();
                 set_canvas_background();
-                tool.Global.PROJECT_SCALE_ = planet_placement_project_.ProjScaleSetting;
+                planet_placement_project_.ProjScaleSetting = tool.Global.PROJECT_SCALE_;
                 ThreadedParseFiles();
             }
         }
@@ -221,11 +221,16 @@ namespace PlanetPlacementTool
             BackgroundWorker parser = new BackgroundWorker();
             parser.DoWork += (object sender, DoWorkEventArgs e) =>
             {
+                System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+                customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
+                System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
                 exec.Invoke();
             };
             parser.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs e) => {
                 if (bpb != null && bpb.Visible)
                 {
+                    planet_placement_project_.ProjScaleSetting = tool.Global.PROJECT_SCALE_;
                     Project_Scale_.Maximum = tool.Global.PROJECT_MAX_SCALE_;
                     Project_Scale_.Minimum = tool.Global.PROJECT_MIN_SCALE_;
                     Project_Scale_.Value = tool.Global.Clamp(tool.Global.PROJECT_SCALE_, tool.Global.PROJECT_MAX_SCALE_, tool.Global.PROJECT_MIN_SCALE_);
@@ -287,6 +292,10 @@ namespace PlanetPlacementTool
             BackgroundWorker saveHandler = new BackgroundWorker();
             saveHandler.DoWork += (object sender, DoWorkEventArgs e) =>
             {
+                System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+                customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
+                System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
                 exec.Invoke();
             };
             saveHandler.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs e) => {
@@ -309,6 +318,10 @@ namespace PlanetPlacementTool
             BackgroundWorker loadHandler = new BackgroundWorker();
             loadHandler.DoWork += (object sender, DoWorkEventArgs e) =>
             {
+                System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+                customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
+                System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
                 exec.Invoke(LoadFile);
             };
             loadHandler.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs e) => {
@@ -394,6 +407,10 @@ namespace PlanetPlacementTool
             BackgroundWorker Updater = new BackgroundWorker();
             Updater.DoWork += (object sender, DoWorkEventArgs e) =>
             {
+                System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+                customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
+                System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
                 exec.Invoke();
             };
             Updater.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs e) => {
@@ -428,6 +445,10 @@ namespace PlanetPlacementTool
             BackgroundWorker exporter = new BackgroundWorker();
             exporter.DoWork += (object sender, DoWorkEventArgs e) =>
             {
+                System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+                customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
+                System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
                 exec.Invoke();
             };
             exporter.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs e) => {

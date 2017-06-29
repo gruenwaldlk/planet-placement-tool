@@ -14,7 +14,7 @@ namespace PlanetPlacementTool
         [STAThread]
         static void Main()
         {
-            var culture = new System.Globalization.CultureInfo("en-UK");
+            var culture = new System.Globalization.CultureInfo("en-US");
             System.Globalization.CultureInfo.DefaultThreadCurrentCulture = culture;
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = culture;
             Application.EnableVisualStyles();

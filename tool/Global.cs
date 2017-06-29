@@ -13,9 +13,10 @@ namespace PlanetPlacementTool.tool
         public static int CANVAS_SIZE_ = 0;
         public static int PROJECT_SCALE_ = 0;
         public const int PROJECT_MIN_SCALE_ = 350; //Corresponds to vanilla map size.
-        public const int PROJECT_MAX_SCALE_ = 1100; //Currently arbitrary, but I suspect that larger maps will start clipping with the background.
+        public static int PROJECT_MAX_SCALE_ = 1100; //Currently arbitrary, but I suspect that larger maps will start clipping with the background.
         public static bool PROJECT_INITIALISED_ = false;
         public static bool PROJECT_DIRTY_ = false;
+        public const int PROJECT_SCALE_VARIANT_ = 200;
 #if DEBUG
         public const string APP_STATE_IDLE_ = "ToolState.IDLE_\n";
         public const string APP_ADD_REMOVE_ = "ToolState.ADD_REMOVE_\n";
