@@ -12,6 +12,7 @@ namespace PlanetPlacementTool.tool
         public string Name { get; set; }
         public Vector3 Galactic_Position { get; set; }
         private System.Windows.Forms.PictureBox Representation;
+        private System.Windows.Forms.ToolTip RepresentationTTIP = new System.Windows.Forms.ToolTip();
         public Planet()
         {
 
@@ -48,15 +49,13 @@ namespace PlanetPlacementTool.tool
             //Representation.BackColor = System.Drawing.Color.PaleGreen;
             Representation.Paint += new System.Windows.Forms.PaintEventHandler(Representation_Paint);
             Representation.MouseEnter += new System.EventHandler(Representation_MouseEnter);
+            Representation.MouseLeave += new System.EventHandler(Representation_MouseLeave);
             Representation.MouseDown += new System.Windows.Forms.MouseEventHandler(Representation_MouseDown);
             Representation.MouseMove += new System.Windows.Forms.MouseEventHandler(Representation_MouseMove);
-            Representation.MouseUp += new System.Windows.Forms.MouseEventHandler(Representation_MouseUp);
-            System.Windows.Forms.ToolTip ttip = new System.Windows.Forms.ToolTip();
-            ttip.SetToolTip(Representation, Name);
+            Representation.MouseUp += new System.Windows.Forms.MouseEventHandler(Representation_MouseUp);        
             System.Drawing.Point Position = ImageSpaceCoordinates(CalculateRelativePositionFromGCPosition(Galactic_Position));
             Position.X -= 10;
             Position.Y -= 10;
-            Representation.Cursor = System.Windows.Forms.Cursors.Cross;
             Representation.Location = Position;
             return Representation;
         }
@@ -73,7 +72,42 @@ namespace PlanetPlacementTool.tool
 
         private void Representation_MouseEnter(object sender, EventArgs e)
         {
+            ToolState CurrAppState = Global.APP_STATE_;
+            switch (CurrAppState)
+            {
+                case ToolState.SELECT_MOVE_:
+                    Representation.Cursor = System.Windows.Forms.Cursors.Cross;
+                    break;
+                default:
+                    break;
+            }
+
+           RepresentationTTIP = new System.Windows.Forms.ToolTip
+            {
+                AutoPopDelay = 15000,  // Warning! MSDN states this is Int32, but anything over 32767 will fail.
+                ShowAlways = true,
+                ToolTipTitle = Name,
+                InitialDelay = 200,
+                ReshowDelay = 200,
+                UseAnimation = true
+            };
+            RepresentationTTIP.SetToolTip(Representation, "Galactic position:\n\t" + Galactic_Position.ToString());
+#if DEBUG
             Console.Write("Mouse over {0}\n", Name);
+#endif
+        }
+        private void Representation_MouseLeave(object sender, EventArgs e)
+        {
+            RepresentationTTIP.Active = false;
+            ToolState CurrAppState = Global.APP_STATE_;
+            switch (CurrAppState)
+            {
+                case ToolState.SELECT_MOVE_:
+                    Representation.Cursor = System.Windows.Forms.Cursors.Default;
+                    break;
+                default:
+                    break;
+            }
         }
         private void Representation_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
@@ -130,21 +164,25 @@ namespace PlanetPlacementTool.tool
                 case ToolState.SELECT_MOVE_:
                     if (e.Button == System.Windows.Forms.MouseButtons.Left)
                     {
-                        System.Drawing.Point newPlanetLocation = Representation.Location;
-                        System.Drawing.PointF newRelativePlanetLocation = CalculateRelativePositionFromWindowposition(newPlanetLocation);
-                        Vector3 NewGalacticCoordinates = GalacticSpaceCoordinates(newRelativePlanetLocation);
-                        Galactic_Position = NewGalacticCoordinates;
-
-#if DEBUG
-                        Console.Write("New absolute planet location {0}\n", newPlanetLocation);
-                        Console.Write("New relative planet location {0}\n", newRelativePlanetLocation);
-                        Console.Write("New galactic planet location {0}\n", NewGalacticCoordinates);
-#endif
+                        UpdatePlanetPosition();
                     }
                     break;
                 default:
                     break;
             }
+        }
+        public void UpdatePlanetPosition()
+        {
+            tool.Global.PROJECT_DIRTY_ = true;
+            System.Drawing.Point newPlanetLocation = Representation.Location;
+            System.Drawing.PointF newRelativePlanetLocation = CalculateRelativePositionFromWindowposition(newPlanetLocation);
+            Vector3 NewGalacticCoordinates = GalacticSpaceCoordinates(newRelativePlanetLocation);
+            Galactic_Position = NewGalacticCoordinates;
+#if DEBUG
+            Console.Write("New absolute planet location {0}\n", newPlanetLocation);
+            Console.Write("New relative planet location {0}\n", newRelativePlanetLocation);
+            Console.Write("New galactic planet location {0}\n", NewGalacticCoordinates);
+#endif
         }
         private Vector3 CalculateRelativePositionFromGCPosition(Vector3 absolutePosition)
         {
@@ -199,5 +237,14 @@ namespace PlanetPlacementTool.tool
             absolutePosition.Y = relativePosition.Y * tool.Global.PROJECT_SCALE_;
             return absolutePosition;
         }
+        public string V3ToGalacticPos()
+        {
+            string retStr = Galactic_Position.X.ToString("n1") + ", " + Galactic_Position.Y.ToString("n1") + ", " + Galactic_Position.Z.ToString("n1");
+#if DEBUG
+            Console.Write("Galactic Position:" + retStr + "\n");
+#endif
+            return retStr;
+        }
+
     }
 }

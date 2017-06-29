@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DrawWindow));
             this.main_tsc_ = new System.Windows.Forms.ToolStripContainer();
             this.main_status_strip_ = new System.Windows.Forms.StatusStrip();
@@ -36,18 +37,19 @@
             this.main_status_strip_progressbar_ = new System.Windows.Forms.ToolStripProgressBar();
             this.main_split_container_ = new System.Windows.Forms.SplitContainer();
             this.planet_display_ = new System.Windows.Forms.ListBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.update_scale_ = new System.Windows.Forms.Button();
+            this.Project_Scale_ = new System.Windows.Forms.NumericUpDown();
             this.main_canvas_ = new System.Windows.Forms.Panel();
             this.canvas_draw_space_ = new System.Windows.Forms.PictureBox();
             this.main_planet_tools_ = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.planet_tools_add_ = new System.Windows.Forms.ToolStripButton();
             this.planet_tools_select_move_ = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.menu_item_file_ = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_item_file_new_ = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menu_item_file_open_ = new System.Windows.Forms.ToolStripMenuItem();
-            this.menu_item_file_close_ = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menu_item_file_save_ = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_item_export_ = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,6 +59,8 @@
             this.menu_item_export_all_ = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.main_menu_strip_ = new System.Windows.Forms.MenuStrip();
+            this.tool_tip_ = new System.Windows.Forms.ToolTip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.main_tsc_.BottomToolStripPanel.SuspendLayout();
             this.main_tsc_.ContentPanel.SuspendLayout();
             this.main_tsc_.TopToolStripPanel.SuspendLayout();
@@ -66,6 +70,8 @@
             this.main_split_container_.Panel1.SuspendLayout();
             this.main_split_container_.Panel2.SuspendLayout();
             this.main_split_container_.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Project_Scale_)).BeginInit();
             this.main_canvas_.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas_draw_space_)).BeginInit();
             this.main_planet_tools_.SuspendLayout();
@@ -137,6 +143,7 @@
             // main_split_container_.Panel1
             // 
             this.main_split_container_.Panel1.Controls.Add(this.planet_display_);
+            this.main_split_container_.Panel1.Controls.Add(this.groupBox1);
             // 
             // main_split_container_.Panel2
             // 
@@ -152,9 +159,47 @@
             this.planet_display_.FormattingEnabled = true;
             this.planet_display_.Location = new System.Drawing.Point(0, 0);
             this.planet_display_.Name = "planet_display_";
-            this.planet_display_.Size = new System.Drawing.Size(261, 490);
+            this.planet_display_.SelectionMode = System.Windows.Forms.SelectionMode.None;
+            this.planet_display_.Size = new System.Drawing.Size(261, 426);
             this.planet_display_.Sorted = true;
             this.planet_display_.TabIndex = 0;
+            this.tool_tip_.SetToolTip(this.planet_display_, "List of imported planets.");
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.update_scale_);
+            this.groupBox1.Controls.Add(this.Project_Scale_);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.groupBox1.Location = new System.Drawing.Point(0, 426);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(261, 64);
+            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Map Scale Setting";
+            // 
+            // update_scale_
+            // 
+            this.update_scale_.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.update_scale_.Enabled = false;
+            this.update_scale_.Location = new System.Drawing.Point(3, 38);
+            this.update_scale_.Name = "update_scale_";
+            this.update_scale_.Size = new System.Drawing.Size(255, 23);
+            this.update_scale_.TabIndex = 1;
+            this.update_scale_.Text = "Recalculate Galactic Coordinates";
+            this.tool_tip_.SetToolTip(this.update_scale_, "Recalculates the planet positions based on the current radius.");
+            this.update_scale_.UseVisualStyleBackColor = true;
+            this.update_scale_.Click += new System.EventHandler(this.update_scale__Click);
+            // 
+            // Project_Scale_
+            // 
+            this.Project_Scale_.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Project_Scale_.Location = new System.Drawing.Point(3, 16);
+            this.Project_Scale_.Name = "Project_Scale_";
+            this.Project_Scale_.Size = new System.Drawing.Size(255, 20);
+            this.Project_Scale_.TabIndex = 0;
+            this.Project_Scale_.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tool_tip_.SetToolTip(this.Project_Scale_, "Set the galaxy radius.");
+            this.Project_Scale_.ValueChanged += new System.EventHandler(this.Project_Scale__ValueChanged);
             // 
             // main_canvas_
             // 
@@ -186,12 +231,11 @@
             this.main_planet_tools_.Dock = System.Windows.Forms.DockStyle.None;
             this.main_planet_tools_.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator4,
-            this.planet_tools_add_,
             this.planet_tools_select_move_,
             this.toolStripSeparator5});
             this.main_planet_tools_.Location = new System.Drawing.Point(3, 0);
             this.main_planet_tools_.Name = "main_planet_tools_";
-            this.main_planet_tools_.Size = new System.Drawing.Size(223, 25);
+            this.main_planet_tools_.Size = new System.Drawing.Size(138, 25);
             this.main_planet_tools_.TabIndex = 0;
             // 
             // toolStripSeparator4
@@ -199,23 +243,16 @@
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
             // 
-            // planet_tools_add_
-            // 
-            this.planet_tools_add_.Image = ((System.Drawing.Image)(resources.GetObject("planet_tools_add_.Image")));
-            this.planet_tools_add_.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.planet_tools_add_.Name = "planet_tools_add_";
-            this.planet_tools_add_.Size = new System.Drawing.Size(85, 22);
-            this.planet_tools_add_.Text = "Add Planet";
-            this.planet_tools_add_.Click += new System.EventHandler(this.planet_tools_add__Click);
-            // 
             // planet_tools_select_move_
             // 
+            this.planet_tools_select_move_.CheckOnClick = true;
             this.planet_tools_select_move_.Image = ((System.Drawing.Image)(resources.GetObject("planet_tools_select_move_.Image")));
             this.planet_tools_select_move_.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.planet_tools_select_move_.Name = "planet_tools_select_move_";
             this.planet_tools_select_move_.Size = new System.Drawing.Size(114, 22);
             this.planet_tools_select_move_.Text = "Select and Move";
-            this.planet_tools_select_move_.Click += new System.EventHandler(this.planet_tools_select_move__Click);
+            this.planet_tools_select_move_.ToolTipText = "Select this to move planets.";
+            this.planet_tools_select_move_.CheckedChanged += new System.EventHandler(this.planet_tools_select_move__CheckedChanged);
             // 
             // toolStripSeparator5
             // 
@@ -228,7 +265,6 @@
             this.menu_item_file_new_,
             this.toolStripSeparator2,
             this.menu_item_file_open_,
-            this.menu_item_file_close_,
             this.toolStripSeparator1,
             this.menu_item_file_save_});
             this.menu_item_file_.Name = "menu_item_file_";
@@ -238,7 +274,7 @@
             // menu_item_file_new_
             // 
             this.menu_item_file_new_.Name = "menu_item_file_new_";
-            this.menu_item_file_new_.Size = new System.Drawing.Size(152, 22);
+            this.menu_item_file_new_.Size = new System.Drawing.Size(107, 22);
             this.menu_item_file_new_.Text = "New...";
             this.menu_item_file_new_.ToolTipText = "Create a new project...";
             this.menu_item_file_new_.Click += new System.EventHandler(this.menu_item_file_new__Click);
@@ -246,33 +282,25 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(104, 6);
             // 
             // menu_item_file_open_
             // 
             this.menu_item_file_open_.Name = "menu_item_file_open_";
-            this.menu_item_file_open_.Size = new System.Drawing.Size(152, 22);
+            this.menu_item_file_open_.Size = new System.Drawing.Size(107, 22);
             this.menu_item_file_open_.Text = "Open";
             this.menu_item_file_open_.ToolTipText = "Open an existing project...";
             this.menu_item_file_open_.Click += new System.EventHandler(this.menu_item_file_open__Click);
             // 
-            // menu_item_file_close_
-            // 
-            this.menu_item_file_close_.Name = "menu_item_file_close_";
-            this.menu_item_file_close_.Size = new System.Drawing.Size(152, 22);
-            this.menu_item_file_close_.Text = "Close";
-            this.menu_item_file_close_.ToolTipText = "Close the current project...";
-            this.menu_item_file_close_.Click += new System.EventHandler(this.menu_item_file_close__Click);
-            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(104, 6);
             // 
             // menu_item_file_save_
             // 
             this.menu_item_file_save_.Name = "menu_item_file_save_";
-            this.menu_item_file_save_.Size = new System.Drawing.Size(152, 22);
+            this.menu_item_file_save_.Size = new System.Drawing.Size(107, 22);
             this.menu_item_file_save_.Text = "Save";
             this.menu_item_file_save_.ToolTipText = "Save the current project...";
             this.menu_item_file_save_.Click += new System.EventHandler(this.menu_item_file_save__Click);
@@ -287,6 +315,7 @@
             this.menu_item_export_.Name = "menu_item_export_";
             this.menu_item_export_.Size = new System.Drawing.Size(52, 20);
             this.menu_item_export_.Text = "Export";
+            this.menu_item_export_.ToolTipText = "Export the planet positions to the xml files.";
             // 
             // menu_item_export_planets_
             // 
@@ -319,23 +348,31 @@
             // 
             // helpToolStripMenuItem
             // 
-            this.helpToolStripMenuItem.Enabled = false;
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
             this.helpToolStripMenuItem.ToolTipText = "Help.";
+            this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
             // 
             // main_menu_strip_
             // 
             this.main_menu_strip_.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menu_item_file_,
             this.menu_item_export_,
-            this.helpToolStripMenuItem});
+            this.helpToolStripMenuItem,
+            this.toolStripMenuItem1});
             this.main_menu_strip_.Location = new System.Drawing.Point(0, 0);
             this.main_menu_strip_.Name = "main_menu_strip_";
             this.main_menu_strip_.Size = new System.Drawing.Size(784, 24);
             this.main_menu_strip_.TabIndex = 0;
             this.main_menu_strip_.Text = "menuStrip1";
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(52, 20);
+            this.toolStripMenuItem1.Text = "About";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // DrawWindow
             // 
@@ -349,6 +386,7 @@
             this.MainMenuStrip = this.main_menu_strip_;
             this.Name = "DrawWindow";
             this.Text = "EaW-FoC: Planet Placement Tool";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DrawWindow_FormClosing);
             this.main_tsc_.BottomToolStripPanel.ResumeLayout(false);
             this.main_tsc_.BottomToolStripPanel.PerformLayout();
             this.main_tsc_.ContentPanel.ResumeLayout(false);
@@ -362,6 +400,8 @@
             this.main_split_container_.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.main_split_container_)).EndInit();
             this.main_split_container_.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Project_Scale_)).EndInit();
             this.main_canvas_.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.canvas_draw_space_)).EndInit();
             this.main_planet_tools_.ResumeLayout(false);
@@ -383,7 +423,6 @@
         private System.Windows.Forms.ToolStripMenuItem menu_item_export_traderoutes_;
         private System.Windows.Forms.ToolStripMenuItem menu_item_export_all_;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem menu_item_file_close_;
         private System.Windows.Forms.ToolStripMenuItem menu_item_file_save_;
         private System.Windows.Forms.MenuStrip main_menu_strip_;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -394,7 +433,6 @@
         private System.Windows.Forms.ToolStripStatusLabel main_status_strip_label01_;
         private System.Windows.Forms.ToolStrip main_planet_tools_;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripButton planet_tools_add_;
         private System.Windows.Forms.ToolStripButton planet_tools_select_move_;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.SplitContainer main_split_container_;
@@ -402,6 +440,11 @@
         private System.Windows.Forms.ToolStripProgressBar main_status_strip_progressbar_;
         private System.Windows.Forms.ListBox planet_display_;
         private System.Windows.Forms.PictureBox canvas_draw_space_;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.NumericUpDown Project_Scale_;
+        private System.Windows.Forms.Button update_scale_;
+        private System.Windows.Forms.ToolTip tool_tip_;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
     }
 }
 

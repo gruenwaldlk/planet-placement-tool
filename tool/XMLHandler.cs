@@ -64,5 +64,47 @@ namespace PlanetPlacementTool.tool
             }
             return planetCollection;
         }
+        public void UpdatePlanetXMLFiles(PlanetPlacementProject Current_PPProject)
+        {
+            foreach (string xmlPlanetFile in Current_PPProject.PlanetsXMLPaths)
+            {
+                XDocument document = XDocument.Load(xmlPlanetFile);
+                foreach (XElement element in document.Root.Elements())
+                {
+                    if (element.Name == "Planet")
+                    {
+                        foreach (Planet pl in Current_PPProject.ProjActivePlanets)
+                        {
+                            if (element.Attribute("Name").Value == pl.Name)
+                            {
+#if DEBUG
+                                string pGalacticPos = "Null";
+                                foreach (XElement planet_element in element.Elements())
+                                {
+                                    if (planet_element.Name == "Galactic_Position")
+                                    {
+                                        pGalacticPos = planet_element.Value;
+                                        planet_element.Value = pl.V3ToGalacticPos();
+                                        break;
+                                    }
+                                }
+                                Console.Write("Found Planet {0}, updating galactic coordinates from {1} to {2}.\n", element.Attribute("Name").Value, pGalacticPos, pl.V3ToGalacticPos());
+#else
+                                foreach (XElement planet_element in element.Elements())
+                                {
+                                    if (planet_element.Name == "Galactic_Position")
+                                    {
+                                        planet_element.Value = pl.V3ToGalacticPos();
+                                        break;
+                                    }
+                                }
+#endif
+                            }
+                        }
+                    }
+                }
+                document.Save(@xmlPlanetFile);
+            }
+        }
     }
 }
