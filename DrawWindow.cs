@@ -115,40 +115,54 @@ namespace PlanetPlacementTool
         }
         private void set_canvas_background()
         {
-            main_canvas_.BackgroundImage = Image.FromFile(planet_placement_project_.BackgroundImagePath);
-            main_canvas_.Width = main_canvas_.BackgroundImage.Width;
-            main_canvas_.Height = main_canvas_.BackgroundImage.Height;
+            if (File.Exists(planet_placement_project_.BackgroundImagePath))
+            {
+                main_canvas_.BackgroundImage = Image.FromFile(planet_placement_project_.BackgroundImagePath);
+                main_canvas_.Width = main_canvas_.BackgroundImage.Width;
+                main_canvas_.Height = main_canvas_.BackgroundImage.Height;
+            }
+            else
+            {
+                MessageBox.Show("The galaxy background could not be loaded!\n Please make sure that a the file exists in this position:\n" + planet_placement_project_.BackgroundImagePath, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             draw_grid();
         }
         private void create_background(string background_path)
         {
-            Image background = Image.FromFile(background_path);
-            Bitmap bitmap;
-            Point upperLeft;
-            if (background.Width >= background.Height)
+            if (File.Exists(background_path))
             {
-                bitmap = new Bitmap(background.Width, background.Width);
-                int x;
-                x = (background.Width - background.Height) / 2;
-                upperLeft = new Point(0, x);
+                Image background = Image.FromFile(background_path);
+                Bitmap bitmap;
+                Point upperLeft;
+                if (background.Width >= background.Height)
+                {
+                    bitmap = new Bitmap(background.Width, background.Width);
+                    int x;
+                    x = (background.Width - background.Height) / 2;
+                    upperLeft = new Point(0, x);
+                }
+                else
+                {
+                    bitmap = new Bitmap(background.Height, background.Height);
+                    int x;
+                    x = (background.Height - background.Width) / 2;
+                    upperLeft = new Point(x, 0);
+                }
+                Graphics canvas = Graphics.FromImage(bitmap);
+                SolidBrush brush = new SolidBrush(Color.Black);
+                canvas.FillRectangle(brush, 0, 0, bitmap.Width, bitmap.Height);
+                canvas.DrawImage(background, upperLeft);
+                canvas.Save();
+                bitmap.Save(@project_save_folder_ + "\\" + planet_placement_project_.ProjectName + "\\_background_canvas.png");
+                planet_placement_project_.BackgroundImagePath = project_save_folder_ + "\\" + planet_placement_project_.ProjectName + "\\_background_canvas.png";
+                canvas.Dispose();
+                brush.Dispose();
+                background.Dispose();
             }
             else
             {
-                bitmap = new Bitmap(background.Height, background.Height);
-                int x;
-                x = (background.Height - background.Width) / 2;
-                upperLeft = new Point(x, 0);
+                MessageBox.Show("The galaxy background could not be loaded!\n Please make sure that a the file exists in this position:\n" + background_path, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            Graphics canvas = Graphics.FromImage(bitmap);
-            SolidBrush brush = new SolidBrush(Color.Black);
-            canvas.FillRectangle(brush, 0, 0, bitmap.Width, bitmap.Height);
-            canvas.DrawImage(background, upperLeft);
-            canvas.Save();
-            bitmap.Save(@project_save_folder_ + "\\" + planet_placement_project_.ProjectName + "\\_background_canvas.png");
-            planet_placement_project_.BackgroundImagePath = project_save_folder_ + "\\" + planet_placement_project_.ProjectName + "\\_background_canvas.png";
-            canvas.Dispose();
-            brush.Dispose();
-            background.Dispose();
         }
         private void draw_grid()
         {
